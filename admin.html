@@ -3,54 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Prank Control</title>
+    <title>Admin Control - Prank Panel</title>
+    <!-- Memuat FontAwesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background-color: #111;
-            color: #fff;
-            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            padding-top: 50px;
+            padding: 30px 20px;
             margin: 0;
         }
-        h2 {
-            margin-bottom: 30px;
-        }
-        .btn-prank {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 20px;
-            font-weight: bold;
+        .panel-box {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            border: 2px solid #333;
             border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
         }
-        .btn-prank:active {
-            background-color: #c0392b;
-            transform: scale(0.98);
+        h2 {
+            margin-top: 0;
+            color: #ff5252;
+            letter-spacing: 1px;
         }
-        #status {
-            margin-top: 20px;
-            color: #2ecc71;
+        .status-container {
+            background: #2a2a2a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 16px;
             font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #444;
+        }
+        .dot {
+            height: 12px;
+            width: 12px;
+            background-color: #555;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        .dot.online {
+            background-color: #2ecc71;
+            box-shadow: 0 0 8px #2ecc71;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        button:active {
+            transform: scale(0.97);
+        }
+        .btn-play { background-color: #27ae60; }
+        .btn-pause { background-color: #d35400; }
+        .btn-jumpscare { background-color: #c0392b; font-size: 18px; }
+        .btn-reset { background-color: #2980b9; }
+        
+        #log-status {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #f1c40f;
+            min-height: 20px;
         }
     </style>
 </head>
 <body>
 
-    <h2>Panel Kontrol Prank</h2>
-    <p>Tekan tombol di bawah untuk mengejutkan target secara real-time:</p>
-    <br>
-    
-    <button class="btn-prank" onclick="triggerRemote()">TRIGGER JUMPSCARE!</button>
-    <div id="status"></div>
+    <div class="panel-box">
+        <h2>ADMIN CONTROL</h2>
+        
+        <div class="status-container">
+            <span>User Status:</span>
+            <span class="dot" id="status-dot"></span>
+            <span id="status-text">CHECKING...</span>
+        </div>
 
-    <!-- Script Firebase untuk Admin -->
+        <div class="btn-group">
+            <button class="btn-play" onclick="sendCommand('play')"><i class="fas fa-play"></i> PLAY</button>
+            <button class="btn-pause" onclick="sendCommand('pause')"><i class="fas fa-pause"></i> PAUSE</button>
+            <button class="btn-jumpscare" onclick="sendCommand('jumpscare')"><i class="fas fa-ghost"></i> JUMPSCARE</button>
+            <button class="btn-reset" onclick="sendCommand('reset')"><i class="fas fa-sync-alt"></i> RESET</button>
+        </div>
+
+        <div id="log-status"></div>
+    </div>
+
+    <!-- Script Firebase Admin -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyChOVPFqBphS5ScSOOBcySUGEWk1shcLn4",
@@ -65,20 +130,36 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        window.triggerRemote = function() {
-            const prankRef = ref(db, 'prank_trigger');
-            
-            // Kirim sinyal aktif ke database
-            set(prankRef, {
-                active: true,
+        // Pantau status target secara real-time (Online/Offline)
+        const targetStatusRef = ref(db, 'target_status');
+        onValue(targetStatusRef, (snapshot) => {
+            const data = snapshot.val();
+            const dot = document.getElementById("status-dot");
+            const text = document.getElementById("status-text");
+
+            if (data && (Date.now() - data.lastSeen < 10000)) {
+                dot.classList.add("online");
+                text.innerText = "ONLINE";
+                text.style.color = "#2ecc71";
+            } else {
+                dot.classList.remove("online");
+                text.innerText = "OFFLINE";
+                text.style.color = "#e74c3c";
+            }
+        });
+
+        // Fungsi kirim perintah ke target
+        window.sendCommand = function(actionName) {
+            const commandRef = ref(db, 'prank_command');
+            set(commandRef, {
+                action: actionName,
                 time: Date.now()
             }).then(() => {
-                document.getElementById("status").innerText = "Sinyal Jumpscare Berhasil Dikirim!";
-                setTimeout(() => {
-                    document.getElementById("status").innerText = "";
-                }, 3000);
+                const log = document.getElementById("log-status");
+                log.innerText = `Perintah [${actionName.toUpperCase()}] berhasil dikirim!`;
+                setTimeout(() => { log.innerText = ""; }, 2500);
             }).catch((error) => {
-                alert("Gagal mengirim sinyal: " + error.message);
+                alert("Gagal: " + error.message);
             });
         };
     </script>
