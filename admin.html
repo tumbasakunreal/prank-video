@@ -3,98 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Admin Panel</title>
-
+    <title>Admin Panel - Prank Control</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            padding: 20px;
-            background: #101010;
-            color: #ffffff;
+            background-color: #111;
+            color: #fff;
             font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+            margin: 0;
         }
-
-        .panel {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
+        h2 {
+            margin-bottom: 30px;
         }
-
-        h1 {
-            margin: 0 0 8px;
-            font-size: 26px;
-        }
-
-        .subtitle {
-            margin: 0 0 25px;
-            color: #888888;
-        }
-
-        .status {
-            padding: 15px;
-            background: #181818;
-            border: 1px solid #303030;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .status span {
-            color: #35d06f;
+        .btn-prank {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
             font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-
-        .controls {
-            display: grid;
-            gap: 12px;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            border: 0;
-            border-radius: 10px;
-            background: #242424;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        button:active {
+        .btn-prank:active {
+            background-color: #c0392b;
             transform: scale(0.98);
         }
     </style>
 </head>
-
 <body>
 
-    <div class="panel">
+    <h2>Panel Kontrol Prank</h2>
+    <p>Klik tombol di bawah untuk mengejutkan target:</p>
+    <br>
+    
+    <!-- Tombol ini nanti yang akan memicu jumpscare -->
+    <button class="btn-prank" onclick="triggerRemote()">TRIGGER JUMPSCARE!</button>
 
-        <h1>Admin Panel</h1>
-
-        <p class="subtitle">
-            Kontrol Video
-        </p>
-
-        <div class="status">
-            Status: <span>Siap</span>
-        </div>
-
-        <div class="controls">
-
-            <button>▶ Play Video</button>
-
-            <button>⏸ Pause Video</button>
-
-            <button>⏹ Stop Video</button>
-
-        </div>
-
-    </div>
+    <script>
+        function triggerRemote() {
+            // Untuk sementara kita tes lokal dulu, nanti kita sambungkan ke database
+            alert("Tombol admin berhasil diklik! Tinggal kita hubungkan ke online.");
+        }
+    </script>
 
 </body>
 </html>
+
