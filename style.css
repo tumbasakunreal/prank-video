@@ -25,10 +25,13 @@ body {
 
 .video-box {
     width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
     background: #000;
-    border-radius: 12px;
+    border-radius: 14px;
     overflow: hidden;
     border: 1px solid #333;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .video-box video {
