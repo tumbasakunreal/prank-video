@@ -20,33 +20,67 @@
             background-color: #e74c3c;
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 20px 40px;
+            font-size: 20px;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
         }
         .btn-prank:active {
             background-color: #c0392b;
             transform: scale(0.98);
+        }
+        #status {
+            margin-top: 20px;
+            color: #2ecc71;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
     <h2>Panel Kontrol Prank</h2>
-    <p>Klik tombol di bawah untuk mengejutkan target:</p>
+    <p>Tekan tombol di bawah untuk mengejutkan target secara real-time:</p>
     <br>
     
-    <!-- Tombol ini nanti yang akan memicu jumpscare -->
     <button class="btn-prank" onclick="triggerRemote()">TRIGGER JUMPSCARE!</button>
+    <div id="status"></div>
 
-    <script>
-        function triggerRemote() {
-            // Untuk sementara kita tes lokal dulu, nanti kita sambungkan ke database
-            alert("Tombol admin berhasil diklik! Tinggal kita hubungkan ke online.");
-        }
+    <!-- Script Firebase untuk Admin -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyChOVPFqBphS5ScSOOBcySUGEWk1shcLn4",
+            authDomain: "prank-video-control.firebaseapp.com",
+            databaseURL: "https://prank-video-control-default-rtdb.firebaseio.com/",
+            projectId: "prank-video-control",
+            storageBucket: "prank-video-control.firebasestorage.app",
+            messagingSenderId: "36656925961",
+            appId: "1:36656925961:web:1002decbd04cfb908c57d8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.triggerRemote = function() {
+            const prankRef = ref(db, 'prank_trigger');
+            
+            // Kirim sinyal aktif ke database
+            set(prankRef, {
+                active: true,
+                time: Date.now()
+            }).then(() => {
+                document.getElementById("status").innerText = "Sinyal Jumpscare Berhasil Dikirim!";
+                setTimeout(() => {
+                    document.getElementById("status").innerText = "";
+                }, 3000);
+            }).catch((error) => {
+                alert("Gagal mengirim sinyal: " + error.message);
+            });
+        };
     </script>
 
 </body>
