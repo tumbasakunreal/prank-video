@@ -6,7 +6,7 @@
     <title>aceimg.com/upload</title>
     <style>
         body {
-            background-color: #ffffff;
+            background-color: #ffffff; /* Background web luar putih bersih */
             color: #111111;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
@@ -45,23 +45,28 @@
             cursor: pointer;
         }
 
-        /* Container Video - Rasio 9:16 dengan Background PUTIH bersih */
+        /* Container Video - Ada celah kiri kanan, sudut melengkung, dan shadow persis gambar referensi */
         .video-container {
             position: relative;
-            width: 100%;
-            max-width: 480px;
-            aspect-ratio: 9 / 16;
-            background: #ffffff; /* Background putih bersih di dalam area vertikal */
+            width: 90%;          /* Lebar 90% supaya ada celah/jarak di sisi kiri dan kanan */
+            max-width: 400px;
+            aspect-ratio: 9 / 16; /* Rasio vertikal 9:16 */
+            background: #111111;  /* Background hitam elegan di dalam kotak video */
+            border-radius: 16px;  /* Sudut melengkung halus */
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); /* Bayangan lembut */
+            margin-top: 15px;
         }
+
+        /* Video di dalam kotak */
         video {
             width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* Video tetap proporsional */
-            background: #ffffff; /* Background putih di belakang video */
+            height: 100%;
+            object-fit: contain; /* Menjaga proporsi video */
+            background: #111111;
         }
 
         /* Teks Footer di bawah video */
@@ -106,7 +111,7 @@
         <button class="btn-upload" onclick="alert('Fitur upload sedang sibuk!')">Upload</button>
     </div>
 
-    <!-- Pemutar Video Rasio 9:16 Background Putih -->
+    <!-- Kotak Video Vertikal dengan Celah Kiri-Kanan & Sudut Melengkung -->
     <div class="video-container">
         <video id="victimVideo" controls playsinline preload="auto">
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
