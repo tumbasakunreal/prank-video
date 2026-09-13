@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure System Terminal V.4</title>
+    <title>System Terminal Core v7.1</title>
     <style>
         body {
             background-color: #000;
@@ -14,80 +14,135 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            box-sizing: border-box;
         }
         .header {
             text-align: center;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            font-size: 12px;
         }
         .terminal-screen {
             flex-grow: 1;
-            background-color: #1a1a1a;
+            background-color: #111;
             border: 2px solid #0f0;
             padding: 10px;
             overflow-y: auto;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-size: 13px;
-            white-space: pre-wrap;
+            white-space: pre-wrap; /* Penting untuk menjaga spasi/baris */
             word-wrap: break-word;
+            position: relative;
+        }
+        /* Kursor berkedip */
+        .cursor::after {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: #0f0;
+            animation: blink 1s infinite;
+            vertical-align: bottom;
+            margin-left: 2px;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         .btn-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding-bottom: 20px;
+            gap: 8px;
+            padding-bottom: 10px;
         }
         button {
             background-color: #000;
             color: #0f0;
             border: 1px solid #0f0;
-            padding: 10px;
+            padding: 12px 5px;
             font-family: inherit;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             text-transform: uppercase;
+            transition: all 0.2s;
         }
-        button:active {
+        button:hover {
             background-color: #0f0;
             color: #000;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">:: ROOT_ACCESS GRANTED ::</div>
+    <div class="header">:: ROOT_ACCESS CORE ACTIVE ::</div>
 
     <div class="terminal-screen" id="terminal">
-System Online. Ready for input...
--------------------------------------
+System Initialized... Ready for input.
+> 
 </div>
 
     <div class="btn-container">
-        <button onclick="runAction('DB_DUMP')">Dump Database</button>
-        <button onclick="runAction('DECRYPT')">Decrypt Files</button>
-        <button onclick="runAction('INJECT')">Inject Payload</button>
-        <button onclick="runAction('BYPASS')">Bypass Firewall</button>
-        <button onclick="runAction('SCANNER')">Port Scanner</button>
-        <button onclick="runAction('CRACKER')">Password Cracker</button>
+        <button id="btn1" onclick="startTyping('DB_DUMP')">Dump Database</button>
+        <button id="btn2" onclick="startTyping('DECRYPT')">Decrypt Files</button>
+        <button id="btn3" onclick="startTyping('INJECT')">Inject Payload</button>
+        <button id="btn4" onclick="startTyping('BYPASS')">Bypass FW</button>
+        <button id="btn5" onclick="startTyping('SCANNER')">Port Scan</button>
+        <button id="btn6" onclick="startTyping('CRACKER')">Cracker</button>
     </div>
 
     <script>
         const terminal = document.getElementById('terminal');
-        let output = terminal.innerHTML;
-
-        const messages = {
-            'DB_DUMP': '>>> Iniciating Database Dump... [████████████--] 85%\n>>> Extracting User Data...\n>>> Found 1,234,567 records.\n>>> WARNING: Encryption Detected!\n',
-            'DECRYPT': '>>> Decrypting /root/system/config.enc...\n>>> Key Accepted. Accessing Files...\n>>> FILE LIST: passwords.txt, keys.key, wallet.dat\n',
-            'INJECT': '>>> Injecting Remote Access Payload...\n>>> Connecting to C&C Server...\n>>> Connection Established.\n>>> Status: Awaiting Commands.\n',
-            'BYPASS': '>>> Bypassing Main Firewall... [COMPLETE]\n>>> Disabling Intrusion Detection...\n>>> Route 192.168.1.x established.\n',
-            'SCANNER': '>>> Scanning Target: 10.0.0.5\n>>> Port 80: Open (HTTP)\n>>> Port 443: Open (HTTPS)\n>>> Port 22: Open (SSH)\n>>> Vulnerability Found in SSH Server.\n',
-            'CRACKER': '>>> Attempting Brute Force on admin...\n>>> Trying password: password123 [FAILED]\n>>> Trying password: admin123 [FAILED]\n>>> Trying password: root [FAILED]\n>>> Access Denied.\n'
+        // Kumpulan teks untuk setiap aksi
+        const actionTexts = {
+            'DB_DUMP': '>>> Iniciating Database Dump...\n>>> Target: 192.168.1.102\n>>> [████████████████--] 92%\n>>> Extracting 2,456,112 records...\n>>> SUCCESS: Data saved to /tmp/db_dump.sql\n> ',
+            'DECRYPT': '>>> Decrypting /root/shadow...\n>>> Key Exchange... OK\n>>> Accessing sensitive files... \n>>> FILE LIST: users.pwd, keys.pem, config.ini\n> ',
+            'INJECT': '>>> Injecting Remote Access Payload...\n>>> Connecting to C2 Server 10.10.10.50...\n>>> Established. Awaiting Commands...\n> ',
+            'BYPASS': '>>> Bypassing Main Firewall v9.2...\n>>> Disabling IDS/IPS...\n>>> Access Route 10.x.x.x Established!\n> ',
+            'SCANNER': '>>> Scanning Internal Network...\n>>> Host 172.16.0.5 - Port 21:OPEN, 80:OPEN, 443:OPEN\n>>> Host 172.16.0.6 - Port 22:OPEN, 3306:OPEN\n> ',
+            'CRACKER': '>>> Bruteforcing SSH service (192.168.1.5)... \n>>> Trying admin:password123... [FAILED]\n>>> Trying root:toor... [FAILED]\n>>> Trying support:admin... [SUCCESS]\n> '
         };
 
-        function runAction(action) {
-            output += messages[action];
-            terminal.innerHTML = output;
-            terminal.scrollTop = terminal.scrollHeight; // Auto-scroll ke bawah
+        let isTyping = false; // Mencegah tombol diklik saat sedang mengetik
+
+        function startTyping(action) {
+            if (isTyping) return; // Jika sedang mengetik, abaikan klik tombol lain
+            
+            isTyping = true;
+            // Nonaktifkan semua tombol saat mengetik
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Tambahkan baris baru sebelum memulai teks baru
+            terminal.innerHTML += '\n\n'; 
+            
+            // Hapus kursor sementara
+            const currentTerminalContent = terminal.innerHTML.replace('<span class="cursor">&nbsp;</span>', '');
+            terminal.innerHTML = currentTerminalContent;
+
+            const textToType = actionTexts[action];
+            let charIndex = 0;
+
+            function typeNextChar() {
+                if (charIndex < textToType.length) {
+                    terminal.innerHTML += textToType.charAt(charIndex);
+                    charIndex++;
+                    terminal.scrollTop = terminal.scrollHeight; // Auto-scroll
+                    // Kecepatan mengetik (dalam milidetik)
+                    setTimeout(typeNextChar, 35); 
+                } else {
+                    // Selesai mengetik, tambahkan kembali kursor dan aktifkan tombol
+                    terminal.innerHTML += '<span class="cursor">&nbsp;</span>';
+                    isTyping = false;
+                    buttons.forEach(btn => btn.disabled = false);
+                    terminal.scrollTop = terminal.scrollHeight;
+                }
+            }
+
+            typeNextChar();
         }
     </script>
 
