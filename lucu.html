@@ -26,6 +26,7 @@
             padding: 15px 16px;
             box-sizing: border-box;
             background: #ffffff;
+            z-index: 10;
         }
         .logo {
             font-size: 22px;
@@ -44,36 +45,36 @@
             cursor: pointer;
         }
 
-        /* Container Video - Bingkai vertikal dengan background putih */
+        /* Container Video - Rasio 9:16 Full Vertikal */
         .video-container {
             position: relative;
             width: 100%;
-            max-width: 420px;
-            height: 480px; /* Tinggi bingkai vertikal */
-            background: #ffffff; /* Background putih sesuai permintaan */
-            border-radius: 12px;
+            max-width: 480px;
+            aspect-ratio: 9 / 16; /* Rasio wajib 9:16 */
+            background: #000;     /* Hitam di dalam area video */
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            margin-top: 10px;
         }
         video {
             width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* Video tetap proporsional tidak gepeng */
-            background: #000; /* Hitam di dalam area video saja */
-            border-radius: 8px;
+            height: 100%;
+            object-fit: contain; /* Agar video vertikal pas tanpa terpotong berlebih */
+            background: #000;
         }
 
-        /* Teks Footer di bawah video */
+        /* Teks Footer di bawah video dengan background putih */
         .footer-text {
             padding: 20px 16px;
             font-size: 14px;
             color: #1d4ed8;
             text-align: center;
             font-weight: 500;
+            background: #ffffff;
+            width: 100%;
+            max-width: 480px;
+            box-sizing: border-box;
         }
 
         /* Overlay Jumpscare */
@@ -105,7 +106,7 @@
         <button class="btn-upload" onclick="alert('Fitur upload sedang sibuk!')">Upload</button>
     </div>
 
-    <!-- Pemutar Video dengan bingkai vertikal & background putih -->
+    <!-- Pemutar Video Rasio 9:16 -->
     <div class="video-container">
         <video id="victimVideo" controls playsinline preload="auto">
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
