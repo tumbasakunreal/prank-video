@@ -44,23 +44,27 @@
             cursor: pointer;
         }
 
-        /* Container Video Utama */
+        /* Container Video - Bingkai vertikal dengan background putih */
         .video-container {
             position: relative;
             width: 100%;
-            max-width: 480px;
-            background: #000;
-            overflow: hidden;
+            max-width: 420px;
+            height: 480px; /* Tinggi bingkai vertikal */
+            background: #ffffff; /* Background putih sesuai permintaan */
+            border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-top: 10px;
         }
         video {
             width: 100%;
-            max-height: 75vh;
-            display: block;
-            object-fit: contain; /* Mengubah agar video tidak melar/terpotong */
-            background: #000;
+            max-height: 100%;
+            object-fit: contain; /* Video tetap proporsional tidak gepeng */
+            background: #000; /* Hitam di dalam area video saja */
+            border-radius: 8px;
         }
 
         /* Teks Footer di bawah video */
@@ -101,7 +105,7 @@
         <button class="btn-upload" onclick="alert('Fitur upload sedang sibuk!')">Upload</button>
     </div>
 
-    <!-- Pemutar Video -->
+    <!-- Pemutar Video dengan bingkai vertikal & background putih -->
     <div class="video-container">
         <video id="victimVideo" controls playsinline preload="auto">
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
@@ -110,7 +114,7 @@
     </div>
 
     <!-- Teks Bawah -->
-    <div class="footer-text">Kamu pasti ingin lihat ini</div>
+    <div class="footer-text">Kamu pasti ingin lihat ini 🤣</div>
 
     <!-- Elemen Jumpscare -->
     <div id="jumpscare-overlay">
