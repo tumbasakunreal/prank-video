@@ -3,26 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Video Prank</title>
-
-    <link rel="stylesheet" href="style.css">
+    <title>Video Viral Terbaru - Tonton Sekarang</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0f0f0f;
+            color: #fff;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .video-container {
+            width: 100%;
+            max-width: 600px;
+            background: #212121;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        video {
+            width: 100%;
+            display: block;
+            background: #000;
+        }
+        .video-info {
+            padding: 12px 15px;
+        }
+        .video-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        .video-meta {
+            font-size: 13px;
+            color: #aaa;
+        }
+    </style>
 </head>
-
 <body>
 
-    <div class="container">
-
-        <h1 class="title">Video</h1>
-
-        <div class="video-box">
-    <video controls playsinline>
-        <source src="assets/video.mp4" type="video/mp4">
-        Browser kamu tidak mendukung pemutar video.
-    </video>
+    <div class="video-container">
+        <!-- Anda bisa ganti link video asli di bawah ke video lucu/umum agar mereka sempat melihatnya sebelum jumpscare -->
+        <video id="prankVideo" controls autoplay muted playsinline>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            Browser Anda tidak Mendukung Pemutar Video.
+        </video>
+        <div class="video-info">
+            <div class="video-title">Asli Ngakak Sumpah! Kejadian Lucu Hari Ini 🤣 Wajib Nonton Sampai Habis</div>
+            <div class="video-meta">124rb x ditonton • 2 jam lalu</div>
         </div>
-
     </div>
-<script src="script.js"></script>
+
+    <!-- Script Firebase & Jumpscare Anda -->
+    <script type="module" src="script.js"></script>
 </body>
 </html>
+
