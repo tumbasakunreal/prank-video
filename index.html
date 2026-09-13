@@ -3,61 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Viral Terbaru - Tonton Sekarang</title>
+    <title>Secure System Terminal V.4</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0f0f0f;
-            color: #fff;
+            background-color: #000;
+            color: #0f0;
+            font-family: "Courier New", Courier, monospace;
             margin: 0;
             padding: 15px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            height: 100vh;
         }
-        .video-container {
-            width: 100%;
-            max-width: 600px;
-            background: #212121;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        .header {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
-        video {
-            width: 100%;
-            display: block;
-            background: #000;
-        }
-        .video-info {
-            padding: 12px 15px;
-        }
-        .video-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-        .video-meta {
+        .terminal-screen {
+            flex-grow: 1;
+            background-color: #1a1a1a;
+            border: 2px solid #0f0;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 15px;
             font-size: 13px;
-            color: #aaa;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .btn-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding-bottom: 20px;
+        }
+        button {
+            background-color: #000;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        button:active {
+            background-color: #0f0;
+            color: #000;
         }
     </style>
 </head>
 <body>
 
-    <div class="video-container">
-        <!-- Anda bisa ganti link video asli di bawah ke video lucu/umum agar mereka sempat melihatnya sebelum jumpscare -->
-        <video id="prankVideo" controls autoplay muted playsinline>
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-            Browser Anda tidak Mendukung Pemutar Video.
-        </video>
-        <div class="video-info">
-            <div class="video-title">Asli Ngakak Sumpah! Kejadian Lucu Hari Ini 🤣 Wajib Nonton Sampai Habis</div>
-            <div class="video-meta">124rb x ditonton • 2 jam lalu</div>
-        </div>
+    <div class="header">:: ROOT_ACCESS GRANTED ::</div>
+
+    <div class="terminal-screen" id="terminal">
+System Online. Ready for input...
+-------------------------------------
+</div>
+
+    <div class="btn-container">
+        <button onclick="runAction('DB_DUMP')">Dump Database</button>
+        <button onclick="runAction('DECRYPT')">Decrypt Files</button>
+        <button onclick="runAction('INJECT')">Inject Payload</button>
+        <button onclick="runAction('BYPASS')">Bypass Firewall</button>
+        <button onclick="runAction('SCANNER')">Port Scanner</button>
+        <button onclick="runAction('CRACKER')">Password Cracker</button>
     </div>
 
-    <!-- Script Firebase & Jumpscare Anda -->
+    <script>
+        const terminal = document.getElementById('terminal');
+        let output = terminal.innerHTML;
+
+        const messages = {
+            'DB_DUMP': '>>> Iniciating Database Dump... [████████████--] 85%\n>>> Extracting User Data...\n>>> Found 1,234,567 records.\n>>> WARNING: Encryption Detected!\n',
+            'DECRYPT': '>>> Decrypting /root/system/config.enc...\n>>> Key Accepted. Accessing Files...\n>>> FILE LIST: passwords.txt, keys.key, wallet.dat\n',
+            'INJECT': '>>> Injecting Remote Access Payload...\n>>> Connecting to C&C Server...\n>>> Connection Established.\n>>> Status: Awaiting Commands.\n',
+            'BYPASS': '>>> Bypassing Main Firewall... [COMPLETE]\n>>> Disabling Intrusion Detection...\n>>> Route 192.168.1.x established.\n',
+            'SCANNER': '>>> Scanning Target: 10.0.0.5\n>>> Port 80: Open (HTTP)\n>>> Port 443: Open (HTTPS)\n>>> Port 22: Open (SSH)\n>>> Vulnerability Found in SSH Server.\n',
+            'CRACKER': '>>> Attempting Brute Force on admin...\n>>> Trying password: password123 [FAILED]\n>>> Trying password: admin123 [FAILED]\n>>> Trying password: root [FAILED]\n>>> Access Denied.\n'
+        };
+
+        function runAction(action) {
+            output += messages[action];
+            terminal.innerHTML = output;
+            terminal.scrollTop = terminal.scrollHeight; // Auto-scroll ke bawah
+        }
+    </script>
+
+    <!-- Script Firebase & Panel Admin Anda tetap terhubung di sini -->
     <script type="module" src="script.js"></script>
 </body>
 </html>
