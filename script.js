@@ -22,17 +22,18 @@ document.addEventListener("DOMContentLoaded", function() {
     const statusRef = ref(db, 'target_status');
     set(statusRef, { online: true, lastSeen: Date.now() });
 
-    // Kirim sinyal heartbeat setiap 5 detik agar admin tahu target masih online
+    // Kirim sinyal heartbeat setiap 5 detik
     setInterval(() => {
         set(statusRef, { online: true, lastSeen: Date.now() });
     }, 5000);
 
     let jumpscareOverlay = null;
+    let autoCloseTimer = null;
 
-    // Fungsi Jumpscare (bisa muncul singkat atau sesuai perintah)
-    function showJumpscare(imagePath, soundPath) {
+    // Fungsi Jumpscare dengan kustomisasi gambar, suara, dan durasi
+    function showJumpscare(imagePath, soundPath, durationInSeconds) {
         if (video) video.pause();
-        if (jumpscareOverlay) return; // Kalau sudah muncul, biarkan
+        if (jumpscareOverlay) return; // Jika sudah muncul, abaikan duplikat
 
         jumpscareOverlay = document.createElement("div");
         jumpscareOverlay.id = "jumpscare-box";
@@ -56,14 +57,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (soundPath) {
             const audio = new Audio(soundPath);
-            audio.play().catch(e => console.log("Audio diblokir:", e));
+            audio.play().catch(e => console.log("Audio diblokir browser:", e));
         }
 
         document.body.appendChild(jumpscareOverlay);
+
+        // Jika durasi diisi lebih dari 0, otomatis hilang setelah sekian detik
+        if (durationInSeconds && durationInSeconds > 0) {
+            autoCloseTimer = setTimeout(() => {
+                hideJumpscare();
+            }, durationInSeconds * 1000);
+        }
     }
 
     // Fungsi Reset / Hilangkan Jumpscare
     function hideJumpscare() {
+        if (autoCloseTimer) {
+            clearTimeout(autoCloseTimer);
+            autoCloseTimer = null;
+        }
         if (jumpscareOverlay) {
             jumpscareOverlay.remove();
             jumpscareOverlay = null;
@@ -83,10 +95,10 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (cmd.action === "pause") {
             if (video) video.pause();
         } else if (cmd.action === "jumpscare") {
-            // Gambar hantu / glitch & suara horor
             const jumpImg = cmd.image || "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop";
             const jumpSnd = cmd.sound || "https://www.myinstants.com/media/sounds/horror-scream.mp3";
-            showJumpscare(jumpImg, jumpSnd);
+            const duration = parseFloat(cmd.duration) || 0; // 0 artinya muncul terus sampai di-reset
+            showJumpscare(jumpImg, jumpSnd, duration);
         } else if (cmd.action === "reset") {
             hideJumpscare();
         }
