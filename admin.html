@@ -12,16 +12,16 @@
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            padding: 30px 20px;
+            padding: 20px;
             margin: 0;
         }
         .panel-box {
-            max-width: 400px;
+            max-width: 420px;
             margin: 0 auto;
             background: #1e1e1e;
             border: 2px solid #333;
             border-radius: 12px;
-            padding: 25px;
+            padding: 20px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.5);
         }
         h2 {
@@ -31,10 +31,10 @@
         }
         .status-container {
             background: #2a2a2a;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
-            margin-bottom: 25px;
-            font-size: 16px;
+            margin-bottom: 20px;
+            font-size: 15px;
             font-weight: bold;
             display: flex;
             justify-content: center;
@@ -54,15 +54,43 @@
             background-color: #2ecc71;
             box-shadow: 0 0 8px #2ecc71;
         }
+        .custom-section {
+            background: #252525;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+            border: 1px solid #383838;
+        }
+        .custom-section label {
+            display: block;
+            font-size: 12px;
+            color: #bbb;
+            margin-bottom: 5px;
+            margin-top: 10px;
+        }
+        .custom-section label:first-child {
+            margin-top: 0;
+        }
+        .custom-section input {
+            width: 100%;
+            padding: 8px 10px;
+            background: #151515;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
         button {
             width: 100%;
-            padding: 16px;
-            font-size: 16px;
+            padding: 14px;
+            font-size: 15px;
             font-weight: bold;
             border: none;
             border-radius: 8px;
@@ -80,12 +108,12 @@
         }
         .btn-play { background-color: #27ae60; }
         .btn-pause { background-color: #d35400; }
-        .btn-jumpscare { background-color: #c0392b; font-size: 18px; }
+        .btn-jumpscare { background-color: #c0392b; font-size: 17px; }
         .btn-reset { background-color: #2980b9; }
         
         #log-status {
-            margin-top: 20px;
-            font-size: 14px;
+            margin-top: 15px;
+            font-size: 13px;
             color: #f1c40f;
             min-height: 20px;
         }
@@ -100,6 +128,18 @@
             <span>User Status:</span>
             <span class="dot" id="status-dot"></span>
             <span id="status-text">CHECKING...</span>
+        </div>
+
+        <!-- Menu Kustomisasi Jumpscare -->
+        <div class="custom-section">
+            <label><i class="fas fa-image"></i> Link Gambar Jumpscare:</label>
+            <input type="text" id="input-image" value="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop" placeholder="Masukkan URL gambar...">
+
+            <label><i class="fas fa-volume-up"></i> Link Suara Horor (MP3):</label>
+            <input type="text" id="input-sound" value="https://www.myinstants.com/media/sounds/horror-scream.mp3" placeholder="Masukkan URL audio MP3...">
+
+            <label><i class="fas fa-clock"></i> Durasi Tampil (Detik, 0 = Terus menerus):</label>
+            <input type="number" id="input-duration" value="2" min="0" placeholder="Contoh: 2">
         </div>
 
         <div class="btn-group">
@@ -148,13 +188,22 @@
             }
         });
 
-        // Fungsi kirim perintah ke target
+        // Fungsi kirim perintah ke target beserta data kustomnya
         window.sendCommand = function(actionName) {
-            const commandRef = ref(db, 'prank_command');
-            set(commandRef, {
+            const commandData = {
                 action: actionName,
                 time: Date.now()
-            }).then(() => {
+            };
+
+            // Jika tombol jumpscare yang diklik, sertakan data kustom dari input
+            if (actionName === 'jumpscare') {
+                commandData.image = document.getElementById("input-image").value;
+                commandData.sound = document.getElementById("input-sound").value;
+                commandData.duration = document.getElementById("input-duration").value;
+            }
+
+            const commandRef = ref(db, 'prank_command');
+            set(commandRef, commandData).then(() => {
                 const log = document.getElementById("log-status");
                 log.innerText = `Perintah [${actionName.toUpperCase()}] berhasil dikirim!`;
                 setTimeout(() => { log.innerText = ""; }, 2500);
