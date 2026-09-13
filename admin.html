@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Control - Prank Panel</title>
-    <!-- Memuat FontAwesome untuk Ikon -->
+    <title>Admin Control</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -18,7 +17,7 @@
         .panel-box {
             max-width: 420px;
             margin: 0 auto;
-            background: #1e1e1e;
+            background: #1f1f1f;
             border: 2px solid #333;
             border-radius: 12px;
             padding: 20px;
@@ -82,11 +81,6 @@
             box-sizing: border-box;
             font-size: 13px;
         }
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
         button {
             width: 100%;
             padding: 14px;
@@ -123,7 +117,7 @@
 
     <div class="panel-box">
         <h2>ADMIN CONTROL</h2>
-        
+
         <div class="status-container">
             <span>User Status:</span>
             <span class="dot" id="status-dot"></span>
@@ -133,10 +127,10 @@
         <!-- Menu Kustomisasi Jumpscare -->
         <div class="custom-section">
             <label><i class="fas fa-image"></i> Link Gambar Jumpscare:</label>
-            <input type="text" id="input-image" value="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop" placeholder="Masukkan URL gambar...">
+            <input type="text" id="input-image" value="https://raw.githubusercontent.com/tumbasintid/prank-video/main/jump.jpg">
 
             <label><i class="fas fa-volume-up"></i> Link Suara Horor (MP3):</label>
-            <input type="text" id="input-sound" value="https://www.myinstants.com/media/sounds/horror-scream.mp3" placeholder="Masukkan URL audio MP3...">
+            <input type="text" id="input-sound" value="https://raw.githubusercontent.com/tumbasintid/prank-video/main/screamer.mp3">
 
             <label><i class="fas fa-clock"></i> Durasi Tampil (Detik, 0 = Terus menerus):</label>
             <input type="number" id="input-duration" value="2" min="0" placeholder="Contoh: 2">
@@ -158,13 +152,13 @@
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyChOVPFqBphS5ScSOOBcySUGEWk1shcLn4",
+            apiKey: "AIzaSyChOVFqBp5hS5C50B8cySU6EWkIshcIn4",
             authDomain: "prank-video-control.firebaseapp.com",
             databaseURL: "https://prank-video-control-default-rtdb.firebaseio.com/",
             projectId: "prank-video-control",
             storageBucket: "prank-video-control.firebasestorage.app",
-            messagingSenderId: "36656925961",
-            appId: "1:36656925961:web:1002decbd04cfb908c57d8"
+            messagingSenderId: "39556925961",
+            appId: "1:39556925961:web:1002decbd04cfb908c57d8"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -174,17 +168,17 @@
         const targetStatusRef = ref(db, 'target_status');
         onValue(targetStatusRef, (snapshot) => {
             const data = snapshot.val();
-            const dot = document.getElementById("status-dot");
-            const text = document.getElementById("status-text");
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
 
             if (data && (Date.now() - data.lastSeen < 10000)) {
-                dot.classList.add("online");
-                text.innerText = "ONLINE";
-                text.style.color = "#2ecc71";
+                dot.classList.add('online');
+                text.innerText = 'ONLINE';
+                text.style.color = '#2ecc71';
             } else {
-                dot.classList.remove("online");
-                text.innerText = "OFFLINE";
-                text.style.color = "#e74c3c";
+                dot.classList.remove('online');
+                text.innerText = 'OFFLINE';
+                text.style.color = '#e74c3c';
             }
         });
 
@@ -197,14 +191,14 @@
 
             // Jika tombol jumpscare yang diklik, sertakan data kustom dari input
             if (actionName === 'jumpscare') {
-                commandData.image = document.getElementById("input-image").value;
-                commandData.sound = document.getElementById("input-sound").value;
-                commandData.duration = document.getElementById("input-duration").value;
+                commandData.image = document.getElementById('input-image').value;
+                commandData.sound = document.getElementById('input-sound').value;
+                commandData.duration = document.getElementById('input-duration').value;
             }
 
             const commandRef = ref(db, 'prank_command');
             set(commandRef, commandData).then(() => {
-                const log = document.getElementById("log-status");
+                const log = document.getElementById('log-status');
                 log.innerText = `Perintah [${actionName.toUpperCase()}] berhasil dikirim!`;
                 setTimeout(() => { log.innerText = ""; }, 2500);
             }).catch((error) => {
@@ -212,7 +206,6 @@
             });
         };
     </script>
-
 </body>
 </html>
 
