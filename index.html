@@ -15,6 +15,7 @@
             flex-direction: column;
             height: 100vh;
             box-sizing: border-box;
+            overflow: hidden;
         }
         .header {
             text-align: center;
@@ -30,24 +31,9 @@
             overflow-y: auto;
             margin-bottom: 10px;
             font-size: 13px;
-            white-space: pre-wrap; /* Penting untuk menjaga spasi/baris */
+            white-space: pre-wrap;
             word-wrap: break-word;
             position: relative;
-        }
-        /* Kursor berkedip */
-        .cursor::after {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background-color: #0f0;
-            animation: blink 1s infinite;
-            vertical-align: bottom;
-            margin-left: 2px;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
         }
         .btn-container {
             display: grid;
@@ -74,16 +60,34 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+        /* Overlay Jumpscare */
+        #jumpscare-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+        #jumpscare-overlay img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">:: ROOT_ACCESS CORE ACTIVE ::</div>
-
+    
     <div class="terminal-screen" id="terminal">
 System Initialized... Ready for input.
-> 
-</div>
+>
+    </div>
 
     <div class="btn-container">
         <button id="btn1" onclick="startTyping('DB_DUMP')">Dump Database</button>
@@ -94,35 +98,31 @@ System Initialized... Ready for input.
         <button id="btn6" onclick="startTyping('CRACKER')">Cracker</button>
     </div>
 
+    <!-- Elemen Jumpscare Fullscreen -->
+    <div id="jumpscare-overlay">
+        <img id="js-image" src="" alt="">
+        <audio id="js-audio" preload="auto"></audio>
+    </div>
+
     <script>
         const terminal = document.getElementById('terminal');
-        // Kumpulan teks untuk setiap aksi
         const actionTexts = {
-            'DB_DUMP': '>>> Iniciating Database Dump...\n>>> Target: 192.168.1.102\n>>> [████████████████--] 92%\n>>> Extracting 2,456,112 records...\n>>> SUCCESS: Data saved to /tmp/db_dump.sql\n> ',
-            'DECRYPT': '>>> Decrypting /root/shadow...\n>>> Key Exchange... OK\n>>> Accessing sensitive files... \n>>> FILE LIST: users.pwd, keys.pem, config.ini\n> ',
-            'INJECT': '>>> Injecting Remote Access Payload...\n>>> Connecting to C2 Server 10.10.10.50...\n>>> Established. Awaiting Commands...\n> ',
-            'BYPASS': '>>> Bypassing Main Firewall v9.2...\n>>> Disabling IDS/IPS...\n>>> Access Route 10.x.x.x Established!\n> ',
-            'SCANNER': '>>> Scanning Internal Network...\n>>> Host 172.16.0.5 - Port 21:OPEN, 80:OPEN, 443:OPEN\n>>> Host 172.16.0.6 - Port 22:OPEN, 3306:OPEN\n> ',
-            'CRACKER': '>>> Bruteforcing SSH service (192.168.1.5)... \n>>> Trying admin:password123... [FAILED]\n>>> Trying root:toor... [FAILED]\n>>> Trying support:admin... [SUCCESS]\n> '
+            'DB_DUMP': '>>> Initiating Database Dump...\n>>> Target: 192.168.1.102\n>>> [████████████████████] 92%\n>>> Extracting 2,456,112 records...\n>>> SUCCESS: Data saved to /tmp/db_dump.sql\n>',
+            'DECRYPT': '>>> Decrypting /root/shadow...\n>>> Key Exchange... OK\n>>> Accessing sensitive files...\n>>> FILE LIST: users.pwd, keys.pem, config.ini\n>',
+            'INJECT': '>>> Injecting Remote Access Payload...\n>>> Connecting to C2 Server 10.10.10.50...\n>>> Established. Awaiting Commands...\n>',
+            'BYPASS': '>>> Bypassing Main Firewall v9.2...\n>>> Disabling IDS/IPS...\n>>> Access Route 10.x.x.x Established...\n>',
+            'SCANNER': '>>> Scanning Network...\n>>> Host 172.16.0.5 - Port 21:OPEN, 80:OPEN, 443:OPEN...\n>',
+            'CRACKER': '>>> Bruteforcing SSH service (192.168.1.5)...\n>>> Trying admin:password123... [FAILED]...\n>'
         };
 
-        let isTyping = false; // Mencegah tombol diklik saat sedang mengetik
-
+        let isTyping = false;
         function startTyping(action) {
-            if (isTyping) return; // Jika sedang mengetik, abaikan klik tombol lain
-            
+            if (isTyping) return;
             isTyping = true;
-            // Nonaktifkan semua tombol saat mengetik
             const buttons = document.querySelectorAll('button');
             buttons.forEach(btn => btn.disabled = true);
 
-            // Tambahkan baris baru sebelum memulai teks baru
-            terminal.innerHTML += '\n\n'; 
-            
-            // Hapus kursor sementara
-            const currentTerminalContent = terminal.innerHTML.replace('<span class="cursor">&nbsp;</span>', '');
-            terminal.innerHTML = currentTerminalContent;
-
+            terminal.innerHTML += '\n';
             const textToType = actionTexts[action];
             let charIndex = 0;
 
@@ -130,24 +130,77 @@ System Initialized... Ready for input.
                 if (charIndex < textToType.length) {
                     terminal.innerHTML += textToType.charAt(charIndex);
                     charIndex++;
-                    terminal.scrollTop = terminal.scrollHeight; // Auto-scroll
-                    // Kecepatan mengetik (dalam milidetik)
-                    setTimeout(typeNextChar, 35); 
+                    terminal.scrollTop = terminal.scrollHeight;
+                    setTimeout(typeNextChar, 35);
                 } else {
-                    // Selesai mengetik, tambahkan kembali kursor dan aktifkan tombol
-                    terminal.innerHTML += '<span class="cursor">&nbsp;</span>';
                     isTyping = false;
                     buttons.forEach(btn => btn.disabled = false);
                     terminal.scrollTop = terminal.scrollHeight;
                 }
             }
-
             typeNextChar();
         }
     </script>
 
-    <!-- Script Firebase & Panel Admin Anda tetap terhubung di sini -->
-    <script type="module" src="script.js"></script>
+    <!-- Script Firebase Penerima Perintah Target -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyChOVFqBp5hS5C50B8cySU6EWkIshcIn4",
+            authDomain: "prank-video-control.firebaseapp.com",
+            databaseURL: "https://prank-video-control-default-rtdb.firebaseio.com/",
+            projectId: "prank-video-control",
+            storageBucket: "prank-video-control.firebasestorage.app",
+            messagingSenderId: "39556925961",
+            appId: "1:39556925961:web:1002decbd04cfb908c57d8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Kirim status online setiap 3 detik
+        const statusRef = ref(db, 'target_status');
+        setInterval(() => {
+            set(statusRef, { lastSeen: Date.now() });
+        }, 3000);
+
+        // Pantau perintah dari Admin
+        const commandRef = ref(db, 'prank_command');
+        onValue(commandRef, (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            const overlay = document.getElementById('jumpscare-overlay');
+            const img = document.getElementById('js-image');
+            const audio = document.getElementById('js-audio');
+
+            if (data.action === 'play' || data.action === 'jumpscare') {
+                if (data.image) img.src = data.image;
+                if (data.sound) {
+                    audio.src = data.sound;
+                    audio.loop = true;
+                    audio.play().catch(e => console.log("Audio play blocked:", e));
+                }
+                overlay.style.display = 'flex';
+
+                // Jika durasi diatur (misal > 0)
+                let duration = parseInt(data.duration);
+                if (duration > 0) {
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }, duration * 1000);
+                }
+            } else if (data.action === 'pause' || data.action === 'reset') {
+                overlay.style.display = 'none';
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        });
+    </script>
 </body>
 </html>
 
