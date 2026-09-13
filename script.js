@@ -2,64 +2,96 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// Konfigurasi Firebase Anda (Sesuaikan link database Anda)
+// Konfigurasi Firebase dengan URL Anda yang sebenarnya
 const firebaseConfig = {
-    databaseURL: "https://<DATABASE_NAME>.firebasedatabase.app" 
+    databaseURL: "https://prank-video-control-default-rtdb.firebaseio.com" 
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Indikator Online untuk Panel Admin
-const statusRef = ref(db, 'status/target');
+// 1. Set Status Target menjadi ONLINE pada jalur target_status
+const statusRef = ref(db, 'target_status');
 set(statusRef, "ONLINE");
 
-// Mendengarkan Perintah dari Panel Admin (Trigger Jumpscare)
-const triggerRef = ref(db, 'control/trigger');
-onValue(triggerRef, (snapshot) => {
+let currentAudio = null;
+let activeOverlay = null;
+
+// 2. Mendengarkan Perintah dari Panel Admin pada jalur prank_command
+const controlRef = ref(db, 'prank_command');
+onValue(controlRef, (snapshot) => {
     const data = snapshot.val();
-    if (data === true) {
-        jalankanJumpscare();
+    if (!data) return;
+
+    const imageUrl = data.image || 'jump.jpg';
+    const soundUrl = data.audio || 'screamer.mp3';
+    const duration = data.duration !== undefined ? parseInt(data.duration) : 0;
+    const command = data.command;
+
+    if (command === 'JUMPSCARE' || command === 'PLAY') {
+        jalankanAksi(imageUrl, soundUrl, duration);
+    } else if (command === 'RESET') {
+        tutupSemua();
     }
 });
 
-// Fungsi Jumpscare Full Layar & Suara Maksimal
-function jalankanJumpscare() {
-    // 1. Putar Suara Teriakan dengan Volume Maksimal (1.0)
-    const audio = new Audio('screamer.mp3');
-    audio.volume = 1.0; // Mengatur volume web ke 100%
-    audio.play().catch(e => console.log("Audio diblokir browser"));
+function jalankanAksi(imgUrl, audioUrl, durationSec) {
+    tutupSemua();
 
-    // 2. Buat Tampilan Jumpscare Full Layar (Menutupi segalanya)
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    overlay.style.width = '100vw';
-    overlay.style.height = '100vh';
-    overlay.style.zIndex = '999999999'; // Pastikan paling atas
-    overlay.style.backgroundColor = '#000';
-    overlay.style.display = 'flex';
-    overlay.style.justifyContent = 'center';
-    overlay.style.alignItems = 'center';
-    overlay.style.overflow = 'hidden';
+    if (audioUrl) {
+        currentAudio = new Audio(audioUrl);
+        currentAudio.volume = 1.0;
+        currentAudio.play().catch(e => console.log("Audio diblokir browser"));
+    }
+
+    activeOverlay = document.createElement('div');
+    activeOverlay.style.position = 'fixed';
+    activeOverlay.style.top = '0';
+    activeOverlay.style.left = '0';
+    activeOverlay.style.width = '100vw';
+    activeOverlay.style.height = '100vh';
+    activeOverlay.style.zIndex = '999999999';
+    activeOverlay.style.backgroundColor = '#000';
+    activeOverlay.style.display = 'flex';
+    activeOverlay.style.justifyContent = 'center';
+    activeOverlay.style.alignItems = 'center';
+    activeOverlay.style.overflow = 'hidden';
 
     const img = document.createElement('img');
-    img.src = 'jump.jpg';
+    img.src = imgUrl;
     img.style.width = '100vw';
     img.style.height = '100vh';
-    img.style.objectFit = 'cover'; // Memastikan gambar memenuhi layar penuh tanpa gepeng/terpotong
+    img.style.objectFit = 'cover';
     img.style.position = 'absolute';
 
-    overlay.appendChild(img);
-    document.body.appendChild(overlay);
+    activeOverlay.appendChild(img);
+    document.body.appendChild(activeOverlay);
 
-    // 3. Paksa Masuk Mode Fullscreen (Layar Penuh Browser) jika didukung
     try {
         if (document.documentElement.requestFullscreen) {
             document.documentElement.requestFullscreen();
-        } else if (document.documentElement.webkitRequestFullscreen) {
-            document.documentElement.webkitRequestFullscreen();
+        }
+    } catch(err) {}
+
+    if (durationSec > 0) {
+        setTimeout(() => {
+            tutupSemua();
+        }, durationSec * 1000);
+    }
+}
+
+function tutupSemua() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
+    if (activeOverlay) {
+        activeOverlay.remove();
+        activeOverlay = null;
+    }
+    try {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
         }
     } catch(err) {}
 }
