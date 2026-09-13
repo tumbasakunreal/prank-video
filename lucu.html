@@ -45,13 +45,13 @@
             cursor: pointer;
         }
 
-        /* Container Video - Rasio 9:16 Full Vertikal */
+        /* Container Video - Rasio 9:16 dengan Background PUTIH bersih */
         .video-container {
             position: relative;
             width: 100%;
             max-width: 480px;
-            aspect-ratio: 9 / 16; /* Rasio wajib 9:16 */
-            background: #000;     /* Hitam di dalam area video */
+            aspect-ratio: 9 / 16;
+            background: #ffffff; /* Background putih bersih di dalam area vertikal */
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -59,12 +59,12 @@
         }
         video {
             width: 100%;
-            height: 100%;
-            object-fit: contain; /* Agar video vertikal pas tanpa terpotong berlebih */
-            background: #000;
+            max-height: 100%;
+            object-fit: contain; /* Video tetap proporsional */
+            background: #ffffff; /* Background putih di belakang video */
         }
 
-        /* Teks Footer di bawah video dengan background putih */
+        /* Teks Footer di bawah video */
         .footer-text {
             padding: 20px 16px;
             font-size: 14px;
@@ -106,7 +106,7 @@
         <button class="btn-upload" onclick="alert('Fitur upload sedang sibuk!')">Upload</button>
     </div>
 
-    <!-- Pemutar Video Rasio 9:16 -->
+    <!-- Pemutar Video Rasio 9:16 Background Putih -->
     <div class="video-container">
         <video id="victimVideo" controls playsinline preload="auto">
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
@@ -115,7 +115,7 @@
     </div>
 
     <!-- Teks Bawah -->
-    <div class="footer-text">Kamu pasti ingin lihat ini 🤣</div>
+    <div class="footer-text">Kamu pasti ingin lihat ini</div>
 
     <!-- Elemen Jumpscare -->
     <div id="jumpscare-overlay">
