@@ -12,7 +12,10 @@ const db = getDatabase(app);
 
 // 1. Set Status Target menjadi ONLINE pada jalur target_status
 const statusRef = ref(db, 'target_status');
-set(statusRef, "ONLINE");
+set(statusRef, {
+    status: "ONLINE",
+    lastSeen: Date.now()
+});
 
 let currentAudio = null;
 let activeOverlay = null;
