@@ -16,14 +16,15 @@
             align-items: center;
             min-height: 100vh;
         }
-        /* Header Navbar ala aceimg */
+        
+        /* Header Navbar ala aceimg - diturunkan dikit biar tidak terlalu mepet atas */
         .navbar {
             width: 100%;
-            max-width: 480px;
+            max-width: 420px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 16px;
+            padding: 18px 16px 12px 16px; /* Ditambah padding atasnya */
             box-sizing: border-box;
             background: #ffffff;
             z-index: 10;
@@ -45,27 +46,27 @@
             cursor: pointer;
         }
 
-        /* Container Video - Ada celah kiri kanan, sudut melengkung, dan shadow persis gambar referensi */
+        /* Container Video - Bingkai vertikal 9:16 dengan celah kiri-kanan */
         .video-container {
             position: relative;
-            width: 90%;          /* Lebar 90% supaya ada celah/jarak di sisi kiri dan kanan */
+            width: 90%;
             max-width: 400px;
             aspect-ratio: 9 / 16; /* Rasio vertikal 9:16 */
-            background: #111111;  /* Background hitam elegan di dalam kotak video */
-            border-radius: 16px;  /* Sudut melengkung halus */
+            background: #111111;
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); /* Bayangan lembut */
-            margin-top: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            margin-top: 10px;
         }
 
-        /* Video di dalam kotak */
+        /* Video dipaksa full 9:16 vertikal menggunakan object-fit: cover */
         video {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Menjaga proporsi video */
+            object-fit: cover; /* Video otomatis ter-crop/zoom memenuhi seluruh bingkai 9:16 */
             background: #111111;
         }
 
@@ -105,13 +106,13 @@
 </head>
 <body>
 
-    <!-- Navbar Atas -->
+    <!-- Navbar Atas (sudah diturunkan) -->
     <div class="navbar">
         <div class="logo">aceimg</div>
         <button class="btn-upload" onclick="alert('Fitur upload sedang sibuk!')">Upload</button>
     </div>
 
-    <!-- Kotak Video Vertikal dengan Celah Kiri-Kanan & Sudut Melengkung -->
+    <!-- Kotak Video Vertikal 9:16 Full Cover -->
     <div class="video-container">
         <video id="victimVideo" controls playsinline preload="auto">
             <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
