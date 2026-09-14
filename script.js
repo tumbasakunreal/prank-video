@@ -27,7 +27,7 @@ onValue(controlRef, (snapshot) => {
     if (!data) return;
 
     const imageUrl = data.image || 'jump.jpg';
-    const soundUrl = data.audio || 'screamer.mp3';
+    const soundUrl = data.audio || 'ahhh.mp3';
     const duration = data.duration !== undefined ? parseInt(data.duration) : 0;
     const command = data.command;
 
